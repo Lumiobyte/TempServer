@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
 
 from app.db import get_db
@@ -8,17 +9,22 @@ bp = Blueprint('data', __name__, url_prefix='/data')
 def overview():
     db = get_db()
 
-    temperatures = db.execute("SELECT reading FROM temperature WHERE created >= datetime('now', '-24 hours') ORDER BY created DESC").fetchall()
-    voltages = db.execute("SELECT reading FROM voltage WHERE created >= datetime('now', '-24 hours') ORDER BY created DESC").fetchall()
+    temperatures = db.execute("SELECT reading, created FROM temperature WHERE created >= datetime('now', '-24 hours') ORDER BY created ASC").fetchall()
+    voltages = db.execute("SELECT reading, created FROM voltage WHERE created >= datetime('now', '-24 hours') ORDER BY created ASC").fetchall()
 
-    return render_template("data/overview.html", temperatures=temperatures, voltages=voltages)
+    temp_labels = json.dumps([row["created"].strftime("%H:%M") for row in temperatures])
+    temp_values = json.dumps([row["reading"] for row in temperatures])
+    volt_labels = json.dumps([row["created"].strftime("%H:%M") for row in voltages])
+    volt_values = json.dumps([row["reading"] for row in voltages])
+
+    return render_template("data/overview.html", temp_labels=temp_labels, temp_values=temp_values, volt_labels=volt_labels, volt_values=volt_values)
 
 @bp.route("/manage", methods=("GET",))
 def manage():
     db = get_db()
 
-    temperatures = db.execute("SELECT id, reading, created FROM temperature WHERE created >= datetime('now', '-24 hours') ORDER BY created DESC").fetchall()
-    voltages = db.execute("SELECT id, reading, created FROM voltage WHERE created >= datetime('now', '-24 hours') ORDER BY created DESC").fetchall()
+    temperatures = db.execute("SELECT id, reading, created FROM temperature WHERE created >= datetime('now', '-24 hours') ORDER BY created ASC").fetchall()
+    voltages = db.execute("SELECT id, reading, created FROM voltage WHERE created >= datetime('now', '-24 hours') ORDER BY created ASC").fetchall()
 
     return render_template("data/manage.html", temperatures=temperatures, voltages=voltages)
 

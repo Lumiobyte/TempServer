@@ -5,5 +5,67 @@
 {% endblock %}
 
 {% block content %}
-<p>Render graph here</p>
+<p>Temperature</p>
+<canvas id="tempChart"></canvas>
+
+<p>Voltage</p>
+<canvas id="voltChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const tempLabels = {{ temp_labels | safe }}
+    const tempValues = {{ temp_values | safe }}
+    const voltLabels = {{ volt_labels | safe }}
+    const voltValues = {{ volt_values | safe }}
+
+    new Chart(document.getElementById('tempChart'), {
+        type: 'line',
+        data: {
+            labels: tempLabels,
+            datasets: [{
+                label: '°C',
+                data: tempValues,
+                borderColor: 'rgb(220, 80, 60)',
+                tension: 0,
+                fill: true,
+                backgroundColor: 'rgb(110, 40, 30)'
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 8   // roughly this many labels shown
+                    }
+                }
+            }
+        }
+    })
+
+    new Chart(document.getElementById('voltChart'), {
+        type: 'line',
+        data: {
+            labels: voltLabels,
+            datasets: [{
+                label: 'V',
+                data: voltValues,
+                borderColor: 'rgb(60, 120, 220)',
+                tension: 0,
+                fill: true,
+                backgroundColor: 'rgb(30, 60, 110)'
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 8   // roughly this many labels shown
+                    }
+                }
+            }
+        }
+    })
+</script>
 {% endblock %}
