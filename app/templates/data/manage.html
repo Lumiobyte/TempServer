@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Manage{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<p>Temperatures ({{ temperatures | length }})</p>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Created</th>
+        <th>Reading</th>
+    </tr>
+    {% for t in temperatures %}
+        <tr>
+            <td>{{ t.id }}</td>
+            <td>{{ t.created }}</td>
+            <td>{{ t.reading }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<p>Voltages ({{ voltages | length }})</p>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Created</th>
+        <th>Reading</th>
+    </tr>
+    {% for v in voltages %}
+        <tr>
+            <td>{{ v.id }}</td>
+            <td>{{ v.created }}</td>
+            <td>{{ v.reading }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock %}
